@@ -1,6 +1,7 @@
 package hello.servlet.web.frontcontroller.v3;
 
 import hello.servlet.web.frontcontroller.ModelView;
+import hello.servlet.web.frontcontroller.MyView;
 import hello.servlet.web.frontcontroller.v3.controller.MemberFormControllerV3;
 import hello.servlet.web.frontcontroller.v3.controller.MemberListControllerV3;
 import hello.servlet.web.frontcontroller.v3.controller.MemberSaveControllerV3;
@@ -46,9 +47,14 @@ public class FrontControllerV3 extends HttpServlet {
         Map<String, String> paramMap = createParamMap(request);
 
         ModelView mv = controller.process(paramMap);
-        mv.getViewName(); //논리이름 new-form
-        //뷰리졸버 부터 실습.
-//        mv.getModel().
+        String viewName = mv.getViewName();//논리이름 new-form
+        //논리이름을 물리이름으로 반환해줘야함.
+        MyView view = viewResolver(viewName);
+        view.render(mv.getModel(), request, response);
+    }
+
+    private static MyView viewResolver(String viewName) {
+        return new MyView("/WEB-INF/views/" + viewName + ".jsp");
     }
 
     private static Map<String, String> createParamMap(HttpServletRequest request) {
